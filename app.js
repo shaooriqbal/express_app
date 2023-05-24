@@ -1,20 +1,29 @@
 const express = require('express');
 const { connectToDb, getDb } = require('./db');
 const { ObjectId } = require('mongodb');
+const mongoose = require('mongoose');
+const User = require('./models/user');
+const userRoutes = require('./routes/userRoutes');
 
 const app = express();
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(userRoutes);
 let db;
 
+//mongoose connection
+const dbUri = 'mongodb+srv://itshaoor:shaoorshah@cluster0.antouad.mongodb.net/?retryWrites=true&w=majority';
+mongoose.connect(dbUri).then(() => app.listen(3000, () => {
+    console.log('Express server started...');
+})).catch((err) => Console.log(err));
+
+
 // db connection
-connectToDb((error) => {
-    if (!error) {
-        app.listen(3000, () => {
-            console.log('Express server started...');
-        });
-        db = getDb();
-    }
-});
+// connectToDb((error) => {
+//     if (!error) {
+//         db = getDb();
+//     }
+// });
 
 //get all cakes
 app.get('/cakes', (req, res) => {
