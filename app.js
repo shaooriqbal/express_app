@@ -12,7 +12,7 @@ app.use(localRoutes);
 let db;
 
 //mongoose connection
-const dbUri = 'mongodb+srv://itshaoor:shaoorshah@cluster0.antouad.mongodb.net/?retryWrites=true&w=majority';
+const dbUri = 'your db url';
 mongoose.connect(dbUri).then(() => app.listen(3000, () => {
     console.log('Express server started...');
 })).catch((err) => Console.log(err));
