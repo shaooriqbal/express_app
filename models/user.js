@@ -5,7 +5,7 @@ const userSchema = new Schema({
     name: {
         type: String,
         required: true
-    },
+    },  
     age: {
         type: Number,
         required: true
@@ -14,6 +14,7 @@ const userSchema = new Schema({
         type: String,
         required: false
     },
+    password: String
 
 }, { timestamps: true });
 

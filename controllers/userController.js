@@ -1,6 +1,7 @@
 const User = require('../models/user');
 const File = require('../models/file');
-
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 const uploadProfile = async (req, res, next) => {
     try {
@@ -39,7 +40,7 @@ const getAllUsers = async (req, res) => {
 };
 
 const getSingleUser = async (req, res) => {
-    await User.findById('646da816dd52ebdfc3d9ef57').
+    await User.findById(req.params.id).
         then((result) => {
             res.send(result);
         }).catch((err) => {
@@ -83,6 +84,54 @@ const getAllFiles = async (req, res) => {
         console.log(err);
     });
 };
+
+const register = async (req, res) => {
+    try {
+        const { name, age, gender, password } = req.body;
+        const existingUser = await User.findOne({ name: name });
+        if (existingUser) {
+            return res.status(400).json({ message: 'user with this name already exists' });
+        }
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        const result = await User.create({
+            name: name,
+            age: age,
+            gender: gender,
+            password: hashedPassword
+        });
+
+        const token = jwt.sign({ name: result.name, id: result._id }, 'thisissecretkey');
+        res.status(201).json({ user: result, token: token });
+
+    } catch
+    (error) {
+        res.status(500).json({ message: "Internal server error..." });
+    }
+}
+
+const login = async (req, res) => {
+
+    try {
+
+        const { name, password } = req.body;
+        const existingUser = await User.findOne({ name: name });
+        if (!existingUser) {
+            return res.status(404).json({ message: 'user with this name not exists' });
+        }
+        const matchingPassword = await bcrypt.compare(password, existingUser.password);
+        if (!matchingPassword) {
+            return res.status(400).json({ message: 'user or password incorrect' });
+        }
+        res.status(200).json({
+            user: existingUser,
+            message: "Login successfully"
+        });
+    } catch (error) {
+        res.status(500).json({ message: "Internal server error..." });
+    }
+};
+
 module.exports = {
     getSingleUser,
     getAllUsers,
@@ -90,5 +139,7 @@ module.exports = {
     updateUser,
     deleteSingleUser,
     uploadProfile,
-    getAllFiles
+    getAllFiles,
+    register,
+    login
 }
