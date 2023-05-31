@@ -4,7 +4,6 @@ const ld = require('lodash');
 
 const server = http.createServer((req, res) => {
     console.log(req.url);
-
     const num = ld.random(0, 20);
     console.log(num);
 

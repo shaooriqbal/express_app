@@ -73,3 +73,4 @@ router.patch('/cakes/:id', (req, res) => {
         res.status(500).json({ error: "Id given is not valid" });
     }
 });
+module.exports = router;

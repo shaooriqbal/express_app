@@ -13,6 +13,7 @@ let db;
 
 //mongoose connection
 const dbUri = 'mongodb+srv://itshaoor:shaoorshah@cluster0.antouad.mongodb.net/?retryWrites=true&w=majority';
+
 mongoose.connect(dbUri).then(() => app.listen(3000, () => {
     console.log('Express server started...');
 })).catch((err) => Console.log(err));
@@ -24,4 +25,3 @@ mongoose.connect(dbUri).then(() => app.listen(3000, () => {
 //         db = getDb();
 //     }
 // });
-

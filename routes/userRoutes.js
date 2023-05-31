@@ -1,71 +1,37 @@
 const express = require('express');
-const User = require('../models/user');
+const controller = require('../controllers/userController');
 const router = express.Router();
-
-//get all user
-
-router.get('/users', (req, res) => {
-    const user = User({
-        name: 'shah',
-        age: 22,
-        gender: 'Male'
-    });
-    user.save().then((result) => {
-        res.send(result);
-    }).catch((err) => {
-        console.log(err);
-    });
+const multer = require('multer');
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'uploads'); // Set the destination folder where files will be saved
+    },
+    filename: function (req, file, cb) {
+        cb(null, file.originalname); // Set the filename to be the same as the original filename
+    }
 });
+const upload = multer({ storage: storage });
+
 
 //get all users
-router.get('/allUsers', (req, res) => {
-    User.find().
-        then((result) => {
-            res.send(result);
-        }).catch((err) => {
-            console.log(err);
-        });
-});
+router.get('/allUsers', controller.getAllUsers);
 
 //get single user
-router.get('/aUser', (req, res) => {
-    User.findById('646da816dd52ebdfc3d9ef57').
-        then((result) => {
-            res.send(result);
-        }).catch((err) => {
-            console.log(err);
-        });
-});
+router.get('/aUser', controller.getSingleUser);
 
 //delete single user
-router.delete('/deleteAuser/:id', (req, res) => {
-    var id = req.params.id;
-    User.findByIdAndDelete(id).
-        then((result) => {
-            res.send(result);
-        }).catch((err) => {
-            console.log(err);
-        });
-});
+router.delete('/deleteAuser/:id', controller.deleteSingleUser);
 
 //post
-router.post('/createUser', (req, res) => {
-
-    const user = new User(req.body);
-    user.save().then((result) => {
-        res.send(result);
-    }).catch((err) => {
-        console.log(err);
-    });
-});
+router.post('/createUser', controller.createUser);
 
 //put
-router.put('/updateUser/:id', (req, res) => {
-    const id = req.params.id;
-    User.findByIdAndUpdate(id, req.body).then((result) => {
-        res.send(result);
-    }).catch((err) => {
-        console.log(err);
-    });
-});
+router.put('/updateUser/:id', controller.updateUser);
+
+//single file upload
+router.post('/uploadProfile', upload.single('profile'), controller.uploadProfile);
+
+//getting all files
+router.get('/getAllFiles', controller.getAllFiles);
+
 module.exports = router;
