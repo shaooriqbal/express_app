@@ -13,7 +13,7 @@ app.use(cors());
 
 //mongoose connection
 mongoose
-    .connect("your db url", {
+    .connect("mongodb+srv://itshaoor:shaoorshah@cluster0.antouad.mongodb.net/?retryWrites=true&w=majority", {
         useNewUrlParser: true,
         useUnifiedTopology: true
     })

@@ -160,7 +160,7 @@ const getUsersRight = async (req, res) => {
     try {
 
         const rights = await Right.find()
-            .populate({ path: 'user_id' })
+            .populate({ path: 'user_id', select: 'name' })
             .exec();
         res.send(rights);
 
