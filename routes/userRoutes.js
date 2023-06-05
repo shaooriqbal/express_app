@@ -3,6 +3,9 @@ const controller = require('../controllers/userController');
 const router = express.Router();
 const multer = require('multer');
 const auth = require('../middlewares/auth');
+const { registerValidator, loginValidator } = require('../validators/userValidators');
+
+
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, 'uploads'); // Set the destination folder where files will be saved
@@ -36,8 +39,12 @@ router.post('/uploadProfile', auth, upload.single('profile'), controller.uploadP
 router.get('/allFiles', auth, controller.getAllFiles);
 
 //user registeration
-router.post('/register', controller.register);
+router.post('/register', registerValidator, controller.register);
 
 //user registeration
-router.post('/login', controller.login);
+router.post('/login', loginValidator, controller.login);
+
+router.post('/userRight', auth, controller.creatUserRight);
+
+router.get('/getRights', auth, controller.getUsersRight);
 module.exports = router;

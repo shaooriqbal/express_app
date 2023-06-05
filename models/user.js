@@ -12,7 +12,7 @@ const userSchema = new Schema({
     },
     gender: {
         type: String,
-        required: false
+        required: false,
     },
     password: String
 

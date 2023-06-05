@@ -2,6 +2,7 @@ const User = require('../models/user');
 const File = require('../models/file');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const Right = require('../models/userRights');
 
 const uploadProfile = async (req, res, next) => {
     try {
@@ -113,7 +114,6 @@ const register = async (req, res) => {
 const login = async (req, res) => {
 
     try {
-
         const { name, password } = req.body;
         const existingUser = await User.findOne({ name: name });
         if (!existingUser) {
@@ -123,13 +123,49 @@ const login = async (req, res) => {
         if (!matchingPassword) {
             return res.status(400).json({ message: 'user or password incorrect' });
         }
+        const userWithoutPassword = {
+            _id: existingUser._id,
+            name: existingUser.name,
+            age: existingUser.age,
+            gender: existingUser.gender
+        };
         res.status(200).json({
-            user: existingUser,
+            user: userWithoutPassword,
             message: "Login successfully"
         });
-    } catch (error) {
+    }
+
+    catch (error) {
         res.status(500).json({ message: "Internal server error..." });
     }
+};
+
+const creatUserRight = async (req, res) => {
+
+    try {
+        const { name, user_id } = req.body;
+        const result = await Right.create({
+            name: name,
+            user_id: user_id
+        });
+        res.status(201).json({ user: result });
+
+    } catch
+    (error) {
+        res.status(500).json({ message: "Internal server error..." });
+    }
+};
+
+const getUsersRight = async (req, res) => {
+    try {
+
+        const rights = await Right.find()
+            .populate({ path: 'user_id' })
+            .exec();
+        res.send(rights);
+
+    } catch (e) { console.log(e); }
+
 };
 
 module.exports = {
@@ -141,5 +177,7 @@ module.exports = {
     uploadProfile,
     getAllFiles,
     register,
-    login
+    login,
+    creatUserRight,
+    getUsersRight
 }
